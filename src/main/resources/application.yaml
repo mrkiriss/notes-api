@@ -1,0 +1,6 @@
+ktor:
+  application:
+    modules:
+      - ru.miet.kvosk.notes.ApplicationKt.module
+  deployment:
+    port: 8080
