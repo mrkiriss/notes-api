@@ -11,8 +11,9 @@ Here are some useful links to get you started:
 
 ## Environment
 
-- Copy `.env.example` to `.env` and adjust values as needed.
-- The `.env` file is ignored by git; keep secrets local.
+- Local: copy `.env.example` to `.env.local` and adjust values as needed.
+- Docker: copy `.env.docker.example` to `.env.docker` (preconfigured for docker-compose).
+- Both `.env.local` and `.env.docker` are ignored by git; keep secrets local.
 
 ## Features
 

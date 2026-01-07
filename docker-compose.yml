@@ -3,11 +3,11 @@
     image: postgres:16-alpine
     container_name: notes-postgres
     environment:
-      POSTGRES_DB: ${DB_NAME:-notes}
-      POSTGRES_USER: ${DB_USER:-notes}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-notes}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "${DB_PORT:-5432}:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -17,11 +17,9 @@
     depends_on:
       - postgres
     env_file:
-      - .env
-    environment:
-      DB_HOST: ${DB_HOST:-postgres}
+      - .env.docker
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "${APP_PORT}:8080"
 
 volumes:
   pgdata:
