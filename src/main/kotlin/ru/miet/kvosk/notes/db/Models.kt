@@ -31,6 +31,7 @@ data class PageResult<T>(
 
 data class NoteSearchFilter(
     val query: String? = null,
+    val title: String? = null,
     val isArchived: Boolean? = null,
     val tagIds: List<UUID>? = null,
 )

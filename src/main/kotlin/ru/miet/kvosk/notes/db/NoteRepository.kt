@@ -116,6 +116,10 @@ class ExposedNoteRepository : NoteRepository {
                     (NotesTable.content.lowerCase() like pattern)
             }
 
+            filter.title?.let { title ->
+                whereConditions += NotesTable.title eq title
+            }
+
             filter.isArchived?.let { value ->
                 whereConditions += NotesTable.isArchived eq value
             }
