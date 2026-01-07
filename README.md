@@ -9,6 +9,11 @@ Here are some useful links to get you started:
 - The [Ktor Slack chat](https://app.slack.com/client/T09229ZC6/C0A974TJ9). You'll need
   to [request an invite](https://surveys.jetbrains.com/s3/kotlin-slack-sign-up) to join.
 
+## Environment
+
+- Copy `.env.example` to `.env` and adjust values as needed.
+- The `.env` file is ignored by git; keep secrets local.
+
 ## Features
 
 Here's a list of features included in this project:
@@ -42,4 +47,3 @@ If the server starts successfully, you'll see the following output:
 2024-12-04 14:32:45.584 [main] INFO  Application - Application started in 0.303 seconds.
 2024-12-04 14:32:45.682 [main] INFO  Application - Responding at http://0.0.0.0:8080
 ```
-
