@@ -121,10 +121,15 @@ class ExposedNoteRepository : NoteRepository {
             }
 
             filter.tagIds?.takeIf { it.isNotEmpty() }?.let { tagIds ->
-                val taggedNoteIds = NoteTagsTable
-                    .slice(NoteTagsTable.noteId)
-                    .select { NoteTagsTable.tagId inList tagIds }
-                whereConditions += NotesTable.id inSubQuery taggedNoteIds
+                val noteIds = NoteTagsTable
+                    .selectAll()
+                    .where { NoteTagsTable.tagId inList tagIds }
+                    .map { it[NoteTagsTable.noteId] }
+                    .distinct()
+                if (noteIds.isEmpty()) {
+                    return@dbQuery PageResult(emptyList(), 0, page.number, page.size)
+                }
+                whereConditions += NotesTable.id inList noteIds
             }
 
             val filteredQuery = if (whereConditions.isEmpty()) {

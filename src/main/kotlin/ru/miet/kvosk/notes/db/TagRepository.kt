@@ -17,6 +17,7 @@ import java.util.UUID
 interface TagRepository {
     fun create(name: String): TagRecord
     fun findById(id: UUID): TagRecord?
+    fun findByIds(ids: List<UUID>): List<TagRecord>
     fun findByName(name: String): TagRecord?
     fun update(id: UUID, name: String): TagRecord?
     fun delete(id: UUID): Boolean
@@ -37,6 +38,16 @@ class ExposedTagRepository : TagRepository {
             .where { TagsTable.id eq id }
             .singleOrNull()
             ?.toTagRecord()
+    }
+
+    override fun findByIds(ids: List<UUID>): List<TagRecord> = dbQuery {
+        if (ids.isEmpty()) {
+            emptyList()
+        } else {
+            TagsTable.selectAll()
+                .where { TagsTable.id inList ids }
+                .map { it.toTagRecord() }
+        }
     }
 
     override fun findByName(name: String): TagRecord? = dbQuery {
