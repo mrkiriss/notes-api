@@ -1,0 +1,4 @@
+﻿type: object
+properties:
+  pagination:
+    $ref: "./pagination_meta_response.yaml"

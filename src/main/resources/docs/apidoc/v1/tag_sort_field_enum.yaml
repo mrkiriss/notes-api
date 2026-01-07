@@ -1,0 +1,6 @@
+﻿type: string
+description: >
+  Tag sort fields.
+  * `name` - Tag name
+enum:
+  - name # NAME | Tag name

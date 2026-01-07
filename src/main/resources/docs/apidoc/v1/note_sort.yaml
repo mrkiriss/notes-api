@@ -1,0 +1,11 @@
+﻿type: object
+required: [field, direction]
+properties:
+  field:
+    allOf:
+      - type: string
+      - $ref: "./note_sort_field_enum.yaml"
+  direction:
+    allOf:
+      - type: string
+      - $ref: "./sort_direction_enum.yaml"

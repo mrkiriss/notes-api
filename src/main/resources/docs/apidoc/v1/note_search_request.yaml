@@ -1,0 +1,10 @@
+﻿type: object
+properties:
+  filter:
+    $ref: "./note_search_filter.yaml"
+  sort:
+    type: array
+    items:
+      $ref: "./note_sort.yaml"
+  page:
+    $ref: "./page_request.yaml"

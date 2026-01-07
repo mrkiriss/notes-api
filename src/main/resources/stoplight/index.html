@@ -1,0 +1,24 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Notes API Docs</title>
+    <link rel="stylesheet" href="https://unpkg.com/@stoplight/elements/styles.min.css" />
+    <style>
+      html, body { height: 100%; margin: 0; }
+      #stoplight-ui { height: 100%; }
+    </style>
+  </head>
+  <body>
+    <div id="stoplight-ui"></div>
+    <script src="https://unpkg.com/@stoplight/elements/web-components.min.js"></script>
+    <script>
+      const specUrl = `${window.location.origin}/apidoc/v1/index.yaml`;
+      const ui = document.createElement('elements-api');
+      ui.apiDescriptionUrl = specUrl;
+      ui.router = 'hash';
+      document.getElementById('stoplight-ui').appendChild(ui);
+    </script>
+  </body>
+</html>

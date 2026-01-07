@@ -1,0 +1,8 @@
+﻿type: string
+description: >
+  Sort direction.
+  * `asc` - Ascending
+  * `desc` - Descending
+enum:
+  - asc # ASC | Ascending
+  - desc # DESC | Descending

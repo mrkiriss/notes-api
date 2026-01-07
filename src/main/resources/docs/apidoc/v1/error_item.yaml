@@ -1,0 +1,8 @@
+﻿type: object
+required: [message]
+properties:
+  message:
+    type: string
+  field:
+    type: string
+    nullable: true

@@ -1,0 +1,16 @@
+﻿type: object
+required: [title, content, is_archived, tag_ids]
+properties:
+  title:
+    type: string
+    minLength: 1
+    maxLength: 200
+  content:
+    type: string
+  is_archived:
+    type: boolean
+  tag_ids:
+    type: array
+    items:
+      type: string
+      format: uuid

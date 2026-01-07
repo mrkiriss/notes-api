@@ -1,0 +1,14 @@
+﻿type: object
+required: [title]
+properties:
+  title:
+    type: string
+    minLength: 1
+    maxLength: 200
+  content:
+    type: string
+  tag_ids:
+    type: array
+    items:
+      type: string
+      format: uuid

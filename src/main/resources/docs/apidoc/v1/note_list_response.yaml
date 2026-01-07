@@ -1,0 +1,9 @@
+﻿type: object
+required: [data, meta]
+properties:
+  data:
+    type: array
+    items:
+      $ref: "./note_response.yaml"
+  meta:
+    $ref: "./meta_response.yaml"

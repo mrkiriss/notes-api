@@ -1,0 +1,324 @@
+﻿openapi: "3.0.3"
+info:
+  title: "Notes API"
+  description: "Headless REST API for notes and tags"
+  version: "1.0.0"
+servers:
+  - url: "http://0.0.0.0:8080/api/v1"
+    description: "v1"
+tags:
+  - name: Notes
+  - name: Tags
+paths:
+  /notes:
+    post:
+      tags: [Notes]
+      operationId: createNote
+      summary: Create note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./create_note_request.yaml"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "./note_envelope_response.yaml"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+  /notes/{id}:
+    get:
+      tags: [Notes]
+      operationId: getNoteById
+      summary: Get note by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: include
+          in: query
+          required: false
+          schema:
+            type: string
+            example: "tags"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./note_envelope_response.yaml"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+    put:
+      tags: [Notes]
+      operationId: replaceNote
+      summary: Replace note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./update_note_request.yaml"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./note_envelope_response.yaml"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+    patch:
+      tags: [Notes]
+      operationId: updateNotePartial
+      summary: Update note partially
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./patch_note_request.yaml"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./note_envelope_response.yaml"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+    delete:
+      tags: [Notes]
+      operationId: deleteNote
+      summary: Delete note
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./null_envelope_response.yaml"
+  /notes:search:
+    post:
+      tags: [Notes]
+      operationId: searchNotes
+      summary: Search notes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./note_search_request.yaml"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./note_list_response.yaml"
+  /notes:search-one:
+    post:
+      tags: [Notes]
+      operationId: searchOneNote
+      summary: Search one note
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./note_search_request.yaml"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./note_envelope_response.yaml"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+  /tags:
+    post:
+      tags: [Tags]
+      operationId: createTag
+      summary: Create tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./create_tag_request.yaml"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "./tag_envelope_response.yaml"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+        "409":
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+  /tags/{id}:
+    get:
+      tags: [Tags]
+      operationId: getTagById
+      summary: Get tag by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./tag_envelope_response.yaml"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "./error_envelope_response.yaml"
+  /tags:search:
+    post:
+      tags: [Tags]
+      operationId: searchTags
+      summary: Search tags
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "./tag_search_request.yaml"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "./tag_list_response.yaml"
+components:
+  schemas:
+    CreateNoteRequest:
+      $ref: "./create_note_request.yaml"
+    UpdateNoteRequest:
+      $ref: "./update_note_request.yaml"
+    PatchNoteRequest:
+      $ref: "./patch_note_request.yaml"
+    CreateTagRequest:
+      $ref: "./create_tag_request.yaml"
+    NoteResponse:
+      $ref: "./note_response.yaml"
+    TagResponse:
+      $ref: "./tag_response.yaml"
+    NoteEnvelopeResponse:
+      $ref: "./note_envelope_response.yaml"
+    NoteListResponse:
+      $ref: "./note_list_response.yaml"
+    TagEnvelopeResponse:
+      $ref: "./tag_envelope_response.yaml"
+    TagListResponse:
+      $ref: "./tag_list_response.yaml"
+    NullEnvelopeResponse:
+      $ref: "./null_envelope_response.yaml"
+    ErrorItem:
+      $ref: "./error_item.yaml"
+    ErrorEnvelopeResponse:
+      $ref: "./error_envelope_response.yaml"
+    MetaResponse:
+      $ref: "./meta_response.yaml"
+    PaginationMetaResponse:
+      $ref: "./pagination_meta_response.yaml"
+    NoteSearchRequest:
+      $ref: "./note_search_request.yaml"
+    TagSearchRequest:
+      $ref: "./tag_search_request.yaml"
+    NoteSearchFilter:
+      $ref: "./note_search_filter.yaml"
+    TagSearchFilter:
+      $ref: "./tag_search_filter.yaml"
+    PageRequest:
+      $ref: "./page_request.yaml"
+    NoteSort:
+      $ref: "./note_sort.yaml"
+    TagSort:
+      $ref: "./tag_sort.yaml"
+    SortDirectionEnum:
+      $ref: "./sort_direction_enum.yaml"
+    NoteSortFieldEnum:
+      $ref: "./note_sort_field_enum.yaml"
+    TagSortFieldEnum:
+      $ref: "./tag_sort_field_enum.yaml"

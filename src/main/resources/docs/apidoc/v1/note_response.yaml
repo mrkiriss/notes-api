@@ -1,0 +1,23 @@
+﻿type: object
+required: [id, title, content, is_archived, created_at, updated_at]
+properties:
+  id:
+    type: string
+    format: uuid
+  title:
+    type: string
+  content:
+    type: string
+  is_archived:
+    type: boolean
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+  tags:
+    type: array
+    nullable: true
+    items:
+      $ref: "./tag_response.yaml"

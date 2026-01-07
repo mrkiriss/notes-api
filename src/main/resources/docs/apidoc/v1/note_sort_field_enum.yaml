@@ -1,0 +1,10 @@
+﻿type: string
+description: >
+  Note sort fields.
+  * `created_at` - Created at
+  * `updated_at` - Updated at
+  * `title` - Title
+enum:
+  - created_at # CREATED_AT | Created at
+  - updated_at # UPDATED_AT | Updated at
+  - title # TITLE | Title
