@@ -118,8 +118,10 @@ data class NoteSortDto(
 enum class NoteSortFieldDto {
     @SerialName("created_at")
     CREATED_AT,
+
     @SerialName("updated_at")
     UPDATED_AT,
+
     @SerialName("title")
     TITLE,
 }
@@ -128,6 +130,7 @@ enum class NoteSortFieldDto {
 enum class SortDirectionDto {
     @SerialName("asc")
     ASC,
+
     @SerialName("desc")
     DESC,
 }

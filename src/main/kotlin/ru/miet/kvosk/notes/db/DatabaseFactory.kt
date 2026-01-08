@@ -1,9 +1,9 @@
 package ru.miet.kvosk.notes.db
 
+import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.transaction
 import ru.miet.kvosk.notes.DatabaseConfig
-import org.flywaydb.core.Flyway
 
 object DatabaseFactory {
     fun init(config: DatabaseConfig) {
@@ -15,11 +15,12 @@ object DatabaseFactory {
             password = config.password,
         )
 
-        val flyway = Flyway.configure()
-            .dataSource(jdbcUrl, config.user, config.password)
-            .locations("classpath:db/migration")
-            .validateMigrationNaming(true)
-            .load()
+        val flyway =
+            Flyway.configure()
+                .dataSource(jdbcUrl, config.user, config.password)
+                .locations("classpath:db/migration")
+                .validateMigrationNaming(true)
+                .load()
         flyway.migrate()
     }
 }

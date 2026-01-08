@@ -11,26 +11,33 @@ import java.util.UUID
 class TagService(
     private val tagRepository: TagRepository,
 ) {
+    private companion object {
+        const val TAG_NAME_MAX_LENGTH = 50
+    }
+
     fun create(name: String): ServiceResult<TagRecord> {
         val nameError = validateName(name)
-        if (nameError != null) return ServiceResult.Error(nameError)
-
         val existing = tagRepository.findByName(name)
-        if (existing != null) {
-            return ServiceResult.Error(
-                ServiceError.Conflict(
-                    field = "name",
-                    message = "Tag name already exists",
-                ),
-            )
+        return when {
+            nameError != null -> ServiceResult.Error(nameError)
+            existing != null ->
+                ServiceResult.Error(
+                    ServiceError.Conflict(
+                        field = "name",
+                        message = "Tag name already exists",
+                    ),
+                )
+            else -> {
+                val tag = tagRepository.create(name)
+                ServiceResult.Success(tag)
+            }
         }
-        val tag = tagRepository.create(name)
-        return ServiceResult.Success(tag)
     }
 
     fun getById(id: UUID): ServiceResult<TagRecord> {
-        val tag = tagRepository.findById(id)
-            ?: return ServiceResult.Error(ServiceError.NotFound("tag", id.toString()))
+        val tag =
+            tagRepository.findById(id)
+                ?: return ServiceResult.Error(ServiceError.NotFound("tag", id.toString()))
         return ServiceResult.Success(tag)
     }
 
@@ -46,22 +53,19 @@ class TagService(
     }
 
     private fun validateName(name: String): ServiceError.Validation? {
-        if (name.isBlank()) {
-            return ServiceError.Validation("name", "Name must not be blank")
+        return when {
+            name.isBlank() -> ServiceError.Validation("name", "Name must not be blank")
+            name.length > TAG_NAME_MAX_LENGTH ->
+                ServiceError.Validation("name", "Name must be at most $TAG_NAME_MAX_LENGTH characters")
+            else -> null
         }
-        if (name.length > 50) {
-            return ServiceError.Validation("name", "Name must be at most 50 characters")
-        }
-        return null
     }
 
     private fun validatePage(page: PageRequest): ServiceError.Validation? {
-        if (page.number < 1) {
-            return ServiceError.Validation("page.number", "Page number must be >= 1")
+        return when {
+            page.number < 1 -> ServiceError.Validation("page.number", "Page number must be >= 1")
+            page.size < 1 -> ServiceError.Validation("page.size", "Page size must be >= 1")
+            else -> null
         }
-        if (page.size < 1) {
-            return ServiceError.Validation("page.size", "Page size must be >= 1")
-        }
-        return null
     }
 }

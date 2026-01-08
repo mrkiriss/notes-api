@@ -6,7 +6,6 @@ import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.like
 import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.count
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.lowerCase
@@ -16,64 +15,92 @@ import java.util.UUID
 
 interface TagRepository {
     fun create(name: String): TagRecord
+
     fun findById(id: UUID): TagRecord?
+
     fun findByIds(ids: List<UUID>): List<TagRecord>
+
     fun findByName(name: String): TagRecord?
-    fun update(id: UUID, name: String): TagRecord?
+
+    fun update(
+        id: UUID,
+        name: String,
+    ): TagRecord?
+
     fun delete(id: UUID): Boolean
-    fun search(filter: TagSearchFilter, sort: List<TagSort>, page: PageRequest): PageResult<TagRecord>
+
+    fun search(
+        filter: TagSearchFilter,
+        sort: List<TagSort>,
+        page: PageRequest,
+    ): PageResult<TagRecord>
 }
 
 class ExposedTagRepository : TagRepository {
-    override fun create(name: String): TagRecord = dbQuery {
-        val insert = TagsTable.insert {
-            it[TagsTable.name] = name
+    override fun create(name: String): TagRecord =
+        dbQuery {
+            val insert =
+                TagsTable.insert {
+                    it[TagsTable.name] = name
+                }
+            insert.resultedValues?.singleOrNull()?.toTagRecord()
+                ?: error("Failed to insert tag")
         }
-        insert.resultedValues?.singleOrNull()?.toTagRecord()
-            ?: error("Failed to insert tag")
-    }
 
-    override fun findById(id: UUID): TagRecord? = dbQuery {
-        TagsTable.selectAll()
-            .where { TagsTable.id eq id }
-            .singleOrNull()
-            ?.toTagRecord()
-    }
-
-    override fun findByIds(ids: List<UUID>): List<TagRecord> = dbQuery {
-        if (ids.isEmpty()) {
-            emptyList()
-        } else {
+    override fun findById(id: UUID): TagRecord? =
+        dbQuery {
             TagsTable.selectAll()
-                .where { TagsTable.id inList ids }
-                .map { it.toTagRecord() }
+                .where { TagsTable.id eq id }
+                .singleOrNull()
+                ?.toTagRecord()
         }
-    }
 
-    override fun findByName(name: String): TagRecord? = dbQuery {
-        TagsTable.selectAll()
-            .where { TagsTable.name eq name }
-            .singleOrNull()
-            ?.toTagRecord()
-    }
-
-    override fun update(id: UUID, name: String): TagRecord? = dbQuery {
-        val updated = TagsTable.update({ TagsTable.id eq id }) {
-            it[TagsTable.name] = name
+    override fun findByIds(ids: List<UUID>): List<TagRecord> =
+        dbQuery {
+            if (ids.isEmpty()) {
+                emptyList()
+            } else {
+                TagsTable.selectAll()
+                    .where { TagsTable.id inList ids }
+                    .map { it.toTagRecord() }
+            }
         }
-        if (updated == 0) {
-            null
-        } else {
-            findById(id)
+
+    override fun findByName(name: String): TagRecord? =
+        dbQuery {
+            TagsTable.selectAll()
+                .where { TagsTable.name eq name }
+                .singleOrNull()
+                ?.toTagRecord()
         }
-    }
 
-    override fun delete(id: UUID): Boolean = dbQuery {
-        NoteTagsTable.deleteWhere { NoteTagsTable.tagId eq id }
-        TagsTable.deleteWhere { TagsTable.id eq id } > 0
-    }
+    override fun update(
+        id: UUID,
+        name: String,
+    ): TagRecord? =
+        dbQuery {
+            val updated =
+                TagsTable.update({ TagsTable.id eq id }) {
+                    it[TagsTable.name] = name
+                }
+            if (updated == 0) {
+                null
+            } else {
+                findById(id)
+            }
+        }
 
-    override fun search(filter: TagSearchFilter, sort: List<TagSort>, page: PageRequest): PageResult<TagRecord> =
+    override fun delete(id: UUID): Boolean =
+        dbQuery {
+            NoteTagsTable.deleteWhere { NoteTagsTable.tagId eq id }
+            TagsTable.deleteWhere { TagsTable.id eq id } > 0
+        }
+
+    override fun search(
+        filter: TagSearchFilter,
+        sort: List<TagSort>,
+        page: PageRequest,
+    ): PageResult<TagRecord> =
         dbQuery {
             val baseQuery = TagsTable.selectAll()
             val whereConditions = mutableListOf<Op<Boolean>>()
@@ -83,28 +110,31 @@ class ExposedTagRepository : TagRepository {
                 whereConditions += TagsTable.name.lowerCase() like pattern
             }
 
-            val filteredQuery = if (whereConditions.isEmpty()) {
-                baseQuery
-            } else {
-                baseQuery.where { whereConditions.reduce { acc, op -> acc and op } }
-            }
-
-            val total = filteredQuery
-                .copy()
-                .count()
-
-            val orderBy = sort.map {
-                val column = when (it.field) {
-                    TagSortField.NAME -> TagsTable.name
+            val filteredQuery =
+                if (whereConditions.isEmpty()) {
+                    baseQuery
+                } else {
+                    baseQuery.where { whereConditions.reduce { acc, op -> acc and op } }
                 }
-                column to if (it.direction == SortDirection.ASC) SortOrder.ASC else SortOrder.DESC
-            }
 
-            val query = if (orderBy.isEmpty()) {
+            val total =
                 filteredQuery
-            } else {
-                filteredQuery.orderBy(*orderBy.toTypedArray())
-            }
+                    .copy()
+                    .count()
+
+            val orderBy =
+                sort.map {
+                    val column =
+                        when (it.field) {
+                            TagSortField.NAME -> TagsTable.name
+                        }
+                    column to if (it.direction == SortDirection.ASC) SortOrder.ASC else SortOrder.DESC
+                }
+
+            val query =
+                orderBy.fold(filteredQuery) { acc, (column, sortOrder) ->
+                    acc.orderBy(column, sortOrder)
+                }
 
             val offset = ((page.number - 1).coerceAtLeast(0)) * page.size
             val items = query.limit(page.size, offset.toLong()).map { it.toTagRecord() }

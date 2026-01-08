@@ -4,9 +4,12 @@ import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.timestamp
 import java.util.UUID
 
+private const val NOTE_TITLE_MAX_LENGTH = 200
+private const val TAG_NAME_MAX_LENGTH = 50
+
 object NotesTable : Table("notes") {
     val id = uuid("id").clientDefault { UUID.randomUUID() }
-    val title = varchar("title", 200)
+    val title = varchar("title", NOTE_TITLE_MAX_LENGTH)
     val content = text("content")
     val isArchived = bool("is_archived").default(false)
     val createdAt = timestamp("created_at")
@@ -17,7 +20,7 @@ object NotesTable : Table("notes") {
 
 object TagsTable : Table("tags") {
     val id = uuid("id").clientDefault { UUID.randomUUID() }
-    val name = varchar("name", 50).uniqueIndex()
+    val name = varchar("name", TAG_NAME_MAX_LENGTH).uniqueIndex()
 
     override val primaryKey = PrimaryKey(id)
 }

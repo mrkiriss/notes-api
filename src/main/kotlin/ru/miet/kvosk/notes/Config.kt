@@ -61,6 +61,5 @@ private val dotenv: Dotenv by lazy {
 }
 
 fun readEnv(name: String): String {
-    return System.getenv(name) ?: dotenv[name]
-    ?: throw IllegalStateException("Required environment variable $name is not set")
+    return System.getenv(name) ?: dotenv[name] ?: error("Required environment variable $name is not set")
 }
