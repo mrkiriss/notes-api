@@ -51,6 +51,36 @@ To build or run the project, use one of the following tasks:
 | `./gradlew run`                         | Run the server                                                       |
 | `./gradlew runDocker`                   | Run using the local docker image                                     |
 
+## Tests
+
+### Unit tests (no Docker)
+
+```powershell
+./gradlew test
+```
+
+### Integration tests
+
+Integration tests are guarded by `RUN_INTEGRATION_TESTS=true` and expect an external Postgres.
+
+1) Start Postgres (example via docker-compose):
+
+```powershell
+docker compose up -d postgres
+```
+
+2) Run tests with explicit DB settings:
+
+```powershell
+$env:RUN_INTEGRATION_TESTS="true"
+$env:IT_DB_HOST="localhost"
+$env:IT_DB_PORT="5432"
+$env:IT_DB_NAME="notes"
+$env:IT_DB_USER="notes"
+$env:IT_DB_PASSWORD="notes"
+./gradlew test
+```
+
 If the server starts successfully, you'll see the following output:
 
 ```
