@@ -7,19 +7,18 @@ import org.flywaydb.core.Flyway
 
 object DatabaseFactory {
     fun init(config: DatabaseConfig) {
+        val jdbcUrl = "jdbc:postgresql://${config.host}:${config.port}/${config.name}"
         Database.connect(
-            url = "jdbc:postgresql://${config.host}:${config.port}/${config.name}",
+            url = jdbcUrl,
             driver = "org.postgresql.Driver",
             user = config.user,
             password = config.password,
         )
 
         val flyway = Flyway.configure()
-            .dataSource(
-                "jdbc:postgresql://${config.host}:${config.port}/${config.name}",
-                config.user,
-                config.password,
-            )
+            .dataSource(jdbcUrl, config.user, config.password)
+            .locations("classpath:db/migration")
+            .validateMigrationNaming(true)
             .load()
         flyway.migrate()
     }

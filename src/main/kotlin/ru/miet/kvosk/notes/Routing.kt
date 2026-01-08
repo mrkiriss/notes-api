@@ -1,7 +1,9 @@
 package ru.miet.kvosk.notes
 
 import io.ktor.http.*
+import io.ktor.serialization.JsonConvertException
 import io.ktor.server.application.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -23,7 +25,22 @@ fun Application.configureRouting() {
     val tagService = TagService(ExposedTagRepository())
 
     install(StatusPages) {
-        exception<Throwable> { call, _ ->
+        exception<BadRequestException> { call, cause ->
+            call.application.log.warn("Bad request", cause)
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ErrorEnvelope(listOf(ErrorItem(message = "Invalid request body"))),
+            )
+        }
+        exception<JsonConvertException> { call, cause ->
+            call.application.log.warn("Invalid JSON", cause)
+            call.respond(
+                HttpStatusCode.BadRequest,
+                ErrorEnvelope(listOf(ErrorItem(message = "Invalid JSON"))),
+            )
+        }
+        exception<Throwable> { call, cause ->
+            call.application.log.error("Unhandled exception", cause)
             call.respond(
                 HttpStatusCode.InternalServerError,
                 ErrorEnvelope(listOf(ErrorItem(message = "Internal server error"))),
