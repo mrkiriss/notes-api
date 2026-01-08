@@ -99,7 +99,12 @@ private suspend fun RoutingContext.replaceNote(noteService: NoteService) {
 private suspend fun RoutingContext.patchNote(noteService: NoteService) {
     val id = call.parseUuidParam("id") ?: return
     val request = call.receive<PatchNoteRequest>()
-    val tagIds = call.parsePatchTagIds(request.tagIds) ?: return
+    val tagIds =
+        when (val result = call.parsePatchTagIds(request.tagIds)) {
+            TagIdsParseResult.Absent -> null
+            is TagIdsParseResult.Present -> result.ids
+            TagIdsParseResult.Invalid -> return
+        }
     when (
         val result =
             noteService.updatePartial(

@@ -51,11 +51,20 @@ internal suspend fun ApplicationCall.parseNoteFilter(request: NoteSearchRequest)
     }
 }
 
-internal suspend fun ApplicationCall.parsePatchTagIds(tagIds: List<String>?): List<UUID>? {
+internal sealed class TagIdsParseResult {
+    data object Absent : TagIdsParseResult()
+
+    data class Present(val ids: List<UUID>) : TagIdsParseResult()
+
+    data object Invalid : TagIdsParseResult()
+}
+
+internal suspend fun ApplicationCall.parsePatchTagIds(tagIds: List<String>?): TagIdsParseResult {
     return if (tagIds == null) {
-        null
+        TagIdsParseResult.Absent
     } else {
-        parseUuidList(tagIds, "tag_ids")
+        parseUuidList(tagIds, "tag_ids")?.let { TagIdsParseResult.Present(it) }
+            ?: TagIdsParseResult.Invalid
     }
 }
 
