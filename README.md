@@ -16,6 +16,14 @@ Here are some useful links to get you started:
 - `.env.local` is optional and has priority over `.env` for local launch (use `DB_HOST=localhost`).
 - `.env` and `.env.local` are ignored by git; keep secrets local.
 
+## Git hooks (Lefthook)
+
+1) Install Lefthook (needed on each developer machine): https://lefthook.dev/installation/index.html
+2) Enable hooks: `lefthook install`
+2) Hooks:
+   - `pre-commit`: `./gradlew ktlintCheck`, `./gradlew detekt`
+   - `pre-push`: `./gradlew test`
+
 ## Features
 
 Here's a list of features included in this project:
