@@ -2,7 +2,6 @@ package ru.miet.kvosk.notes
 
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
-import io.ktor.server.application.Application
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -19,7 +18,7 @@ data class DatabaseConfig(
     val password: String,
 )
 
-fun Application.loadConfig(): AppConfig {
+fun loadConfig(): AppConfig {
     return AppConfig(
         env = readEnv("APP_ENV"),
         db = loadDatabaseConfig(),
@@ -61,5 +60,8 @@ private val dotenv: Dotenv by lazy {
 }
 
 fun readEnv(name: String): String {
-    return System.getenv(name) ?: dotenv[name] ?: error("Required environment variable $name is not set")
+    return System.getProperty(name)
+        ?: System.getenv(name)
+        ?: dotenv[name]
+        ?: error("Required environment variable $name is not set")
 }

@@ -15,12 +15,20 @@ import ru.miet.kvosk.notes.api.ErrorItem
 import ru.miet.kvosk.notes.db.ExposedNoteRepository
 import ru.miet.kvosk.notes.db.ExposedTagRepository
 import ru.miet.kvosk.notes.service.NoteService
+import ru.miet.kvosk.notes.service.NoteServiceContract
 import ru.miet.kvosk.notes.service.TagService
+import ru.miet.kvosk.notes.service.TagServiceContract
 
 fun Application.configureRouting() {
     val noteService = NoteService(ExposedNoteRepository(), ExposedTagRepository())
     val tagService = TagService(ExposedTagRepository())
+    configureRouting(noteService, tagService)
+}
 
+fun Application.configureRouting(
+    noteService: NoteServiceContract,
+    tagService: TagServiceContract,
+) {
     installStatusPages()
 
     routing {

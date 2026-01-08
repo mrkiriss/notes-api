@@ -16,9 +16,9 @@ import ru.miet.kvosk.notes.api.toPage
 import ru.miet.kvosk.notes.api.toResponse
 import ru.miet.kvosk.notes.api.toSort
 import ru.miet.kvosk.notes.service.ServiceResult
-import ru.miet.kvosk.notes.service.TagService
+import ru.miet.kvosk.notes.service.TagServiceContract
 
-fun Route.tagsRoutes(tagService: TagService) {
+fun Route.tagsRoutes(tagService: TagServiceContract) {
     post("/tags") {
         val request = call.receive<CreateTagRequest>()
         when (val result = tagService.create(request.name)) {

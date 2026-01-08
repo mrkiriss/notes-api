@@ -8,14 +8,26 @@ import ru.miet.kvosk.notes.db.TagSearchFilter
 import ru.miet.kvosk.notes.db.TagSort
 import java.util.UUID
 
+interface TagServiceContract {
+    fun create(name: String): ServiceResult<TagRecord>
+
+    fun getById(id: UUID): ServiceResult<TagRecord>
+
+    fun search(
+        filter: TagSearchFilter,
+        sort: List<TagSort>,
+        page: PageRequest,
+    ): ServiceResult<PageResult<TagRecord>>
+}
+
 class TagService(
     private val tagRepository: TagRepository,
-) {
+) : TagServiceContract {
     private companion object {
         const val TAG_NAME_MAX_LENGTH = 50
     }
 
-    fun create(name: String): ServiceResult<TagRecord> {
+    override fun create(name: String): ServiceResult<TagRecord> {
         val nameError = validateName(name)
         val existing = tagRepository.findByName(name)
         return when {
@@ -34,14 +46,14 @@ class TagService(
         }
     }
 
-    fun getById(id: UUID): ServiceResult<TagRecord> {
+    override fun getById(id: UUID): ServiceResult<TagRecord> {
         val tag =
             tagRepository.findById(id)
                 ?: return ServiceResult.Error(ServiceError.NotFound("tag", id.toString()))
         return ServiceResult.Success(tag)
     }
 
-    fun search(
+    override fun search(
         filter: TagSearchFilter,
         sort: List<TagSort>,
         page: PageRequest,

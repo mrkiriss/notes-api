@@ -23,16 +23,16 @@ import ru.miet.kvosk.notes.api.UpdateNoteRequest
 import ru.miet.kvosk.notes.api.toPage
 import ru.miet.kvosk.notes.api.toResponse
 import ru.miet.kvosk.notes.api.toSort
-import ru.miet.kvosk.notes.service.NoteService
+import ru.miet.kvosk.notes.service.NoteServiceContract
 import ru.miet.kvosk.notes.service.ServiceError
 import ru.miet.kvosk.notes.service.ServiceResult
 
-fun Route.notesRoutes(noteService: NoteService) {
+fun Route.notesRoutes(noteService: NoteServiceContract) {
     noteCrudRoutes(noteService)
     noteSearchRoutes(noteService)
 }
 
-private fun Route.noteCrudRoutes(noteService: NoteService) {
+private fun Route.noteCrudRoutes(noteService: NoteServiceContract) {
     route("/notes") {
         post { createNote(noteService) }
     }
@@ -42,12 +42,12 @@ private fun Route.noteCrudRoutes(noteService: NoteService) {
     delete("/notes/{id}") { deleteNote(noteService) }
 }
 
-private fun Route.noteSearchRoutes(noteService: NoteService) {
+private fun Route.noteSearchRoutes(noteService: NoteServiceContract) {
     post("/notes:search") { searchNotes(noteService) }
     post("/notes:search-one") { searchOneNote(noteService) }
 }
 
-private suspend fun RoutingContext.createNote(noteService: NoteService) {
+private suspend fun RoutingContext.createNote(noteService: NoteServiceContract) {
     val request = call.receive<CreateNoteRequest>()
     val tagIds = call.parseUuidList(request.tagIds, "tag_ids") ?: return
     when (val result = noteService.create(request.title, request.content, tagIds)) {
@@ -60,7 +60,7 @@ private suspend fun RoutingContext.createNote(noteService: NoteService) {
     }
 }
 
-private suspend fun RoutingContext.getNote(noteService: NoteService) {
+private suspend fun RoutingContext.getNote(noteService: NoteServiceContract) {
     val id = call.parseUuidParam("id") ?: return
     val includeTags = call.includes("tags")
     when (val result = noteService.getById(id, includeTags)) {
@@ -73,7 +73,7 @@ private suspend fun RoutingContext.getNote(noteService: NoteService) {
     }
 }
 
-private suspend fun RoutingContext.replaceNote(noteService: NoteService) {
+private suspend fun RoutingContext.replaceNote(noteService: NoteServiceContract) {
     val id = call.parseUuidParam("id") ?: return
     val request = call.receive<UpdateNoteRequest>()
     val tagIds = call.parseUuidList(request.tagIds, "tag_ids") ?: return
@@ -96,7 +96,7 @@ private suspend fun RoutingContext.replaceNote(noteService: NoteService) {
     }
 }
 
-private suspend fun RoutingContext.patchNote(noteService: NoteService) {
+private suspend fun RoutingContext.patchNote(noteService: NoteServiceContract) {
     val id = call.parseUuidParam("id") ?: return
     val request = call.receive<PatchNoteRequest>()
     val tagIds =
@@ -124,13 +124,13 @@ private suspend fun RoutingContext.patchNote(noteService: NoteService) {
     }
 }
 
-private suspend fun RoutingContext.deleteNote(noteService: NoteService) {
+private suspend fun RoutingContext.deleteNote(noteService: NoteServiceContract) {
     val id = call.parseUuidParam("id") ?: return
     noteService.delete(id)
     call.respond(HttpStatusCode.OK, Envelope<JsonElement>(data = JsonNull))
 }
 
-private suspend fun RoutingContext.searchNotes(noteService: NoteService) {
+private suspend fun RoutingContext.searchNotes(noteService: NoteServiceContract) {
     val request = call.receive<NoteSearchRequest>()
     val includeTags = call.includes("tags")
     val filter = call.parseNoteFilter(request) ?: return
@@ -154,7 +154,7 @@ private suspend fun RoutingContext.searchNotes(noteService: NoteService) {
     }
 }
 
-private suspend fun RoutingContext.searchOneNote(noteService: NoteService) {
+private suspend fun RoutingContext.searchOneNote(noteService: NoteServiceContract) {
     val request = call.receive<NoteSearchRequest>()
     val includeTags = call.includes("tags")
     val filter = call.parseNoteFilter(request) ?: return

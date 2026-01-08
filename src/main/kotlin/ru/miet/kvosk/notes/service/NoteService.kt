@@ -17,11 +17,49 @@ data class NoteDetails(
 
 private const val NOTE_TITLE_MAX_LENGTH = 200
 
+interface NoteServiceContract {
+    fun create(
+        title: String,
+        content: String,
+        tagIds: List<UUID>,
+    ): ServiceResult<NoteDetails>
+
+    fun getById(
+        id: UUID,
+        includeTags: Boolean,
+    ): ServiceResult<NoteDetails>
+
+    fun update(
+        id: UUID,
+        title: String,
+        content: String,
+        isArchived: Boolean,
+        tagIds: List<UUID>,
+    ): ServiceResult<NoteDetails>
+
+    fun updatePartial(
+        id: UUID,
+        title: String?,
+        content: String?,
+        isArchived: Boolean?,
+        tagIds: List<UUID>?,
+    ): ServiceResult<NoteDetails>
+
+    fun delete(id: UUID): ServiceResult<Boolean>
+
+    fun search(
+        filter: NoteSearchFilter,
+        sort: List<NoteSort>,
+        page: PageRequest,
+        includeTags: Boolean,
+    ): ServiceResult<PageResult<NoteDetails>>
+}
+
 class NoteService(
     private val noteRepository: NoteRepository,
     private val tagRepository: TagRepository,
-) {
-    fun create(
+) : NoteServiceContract {
+    override fun create(
         title: String,
         content: String,
         tagIds: List<UUID>,
@@ -49,7 +87,7 @@ class NoteService(
         }
     }
 
-    fun getById(
+    override fun getById(
         id: UUID,
         includeTags: Boolean,
     ): ServiceResult<NoteDetails> {
@@ -60,7 +98,7 @@ class NoteService(
         return ServiceResult.Success(NoteDetails(note, tags))
     }
 
-    fun update(
+    override fun update(
         id: UUID,
         title: String,
         content: String,
@@ -92,7 +130,7 @@ class NoteService(
         }
     }
 
-    fun updatePartial(
+    override fun updatePartial(
         id: UUID,
         title: String?,
         content: String?,
@@ -133,12 +171,12 @@ class NoteService(
         return if (distinctTags.isEmpty()) emptyList() else noteRepository.getTags(noteId)
     }
 
-    fun delete(id: UUID): ServiceResult<Boolean> {
+    override fun delete(id: UUID): ServiceResult<Boolean> {
         val deleted = noteRepository.delete(id)
         return ServiceResult.Success(deleted)
     }
 
-    fun search(
+    override fun search(
         filter: NoteSearchFilter,
         sort: List<NoteSort>,
         page: PageRequest,
