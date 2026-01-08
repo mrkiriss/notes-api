@@ -3,12 +3,12 @@
 ## Назначение
 
 Notes API - headless REST‑сервис для управления заметками и тегами. Основные функции:
-- создание, чтение, обновление и удаление заметок;
+- создание, чтение, обновление, удаление заметок;
 - архивирование заметок (`is_archived`);
 - назначение тегов заметкам (many‑to‑many);
-- поиск с фильтрами/сортировкой/пагинацией.
+- поиск по фильтрам/сортировке/пагинации.
 
-Сервис самостоятельный, без интеграций с другими микросервисами в рамках ТЗ.
+Сервис изолированный, без интеграций с другими микросервисами в рамках ТЗ.
 
 ## Архитектура и зависимости
 
@@ -19,7 +19,7 @@ Notes API - headless REST‑сервис для управления замет�
 - PostgreSQL - реляционная база данных
 - Exposed (SQL DSL) - ORM/SQL‑DSL для работы с БД
 - Flyway - управление миграциями БД
-- OpenAPI 3.0 + Stoplight/Swagger UI - документация API
+- OpenAPI 3.0 + Stoplight UI/Swagger UI - документация API
 - JUnit 5, ktor-server-test - тестирование
 - detekt, ktlint - статический анализ и форматирование кода
 - Lefthook - git hooks
@@ -39,8 +39,16 @@ Notes API - headless REST‑сервис для управления замет�
 
 1) Подготовить `.env`:
 
+Windows PowerShell:
+
 ```powershell
 Copy-Item .env.example .env
+```
+
+Linux/macOS:
+
+```bash
+cp .env.example .env
 ```
 
 2) Запуск:
@@ -61,8 +69,11 @@ docker compose up --build
 
 ### Переменные окружения
 
-`.env.example` и `.env.local.example` содержат шаблоны. Основные переменные:
+Шаблоны:
+- `.env.example` - для Docker (обычно `DB_HOST=postgres`)
+- `.env.local.example` - для локального запуска (обычно `DB_HOST=localhost`)
 
+Основные переменные:
 - `APP_PORT` - порт API (например, `8080`)
 - `DB_HOST` - хост PostgreSQL
 - `DB_PORT` - порт PostgreSQL
@@ -71,8 +82,8 @@ docker compose up --build
 - `DB_PASSWORD` - пароль БД
 
 Правила:
-- `.env` используется docker‑compose и обычно содержит `DB_HOST=postgres`.
-- `.env.local` опционален и приоритетнее для локального запуска; обычно содержит `DB_HOST=localhost`.
+- `.env` используется docker‑compose.
+- `.env.local` опционален и приоритетнее для локального запуска.
 - `.env` и `.env.local` игнорируются git.
 
 ## API документация
@@ -96,7 +107,7 @@ docker compose up --build
 
 ## Как тестировать
 
-### Unit‑тесты (без Docker)
+Команда для всех тестов:
 
 ```powershell
 ./gradlew test
@@ -104,22 +115,26 @@ docker compose up --build
 
 ### Интеграционные тесты (внешний PostgreSQL)
 
+Запускаются вместе с обычными тестами, но перед запуском нужно подготовить окружение.
+
 1) Поднять PostgreSQL (например, через compose):
 
 ```powershell
 docker compose up -d postgres
 ```
 
-2) Запустить тесты:
+2) Установить переменные окружения:
+
+Windows PowerShell:
 
 ```powershell
-$env:RUN_INTEGRATION_TESTS="true"
-$env:IT_DB_HOST="localhost"
-$env:IT_DB_PORT="5432"
-$env:IT_DB_NAME="notes"
-$env:IT_DB_USER="notes"
-$env:IT_DB_PASSWORD="notes"
-./gradlew test
+$Env:RUN_INTEGRATION_TESTS="true"; $Env:IT_DB_HOST="localhost"; $Env:IT_DB_PORT="5432"; $Env:IT_DB_NAME="notes"; $Env:IT_DB_USER="notes"; $Env:IT_DB_PASSWORD="notes"
+```
+
+Linux/macOS:
+
+```bash
+RUN_INTEGRATION_TESTS=true IT_DB_HOST=localhost IT_DB_PORT=5432 IT_DB_NAME=notes IT_DB_USER=notes IT_DB_PASSWORD=notes
 ```
 
 ## Git hooks
@@ -133,5 +148,5 @@ $env:IT_DB_PASSWORD="notes"
 
 ## Контакты и поддержка
 
-Автор: Воскребенцев Кирилл
+Автор: Воскребенцев Кирилл  
 Обратная связь по проекту: kvoskrebentsev@mail.ru, https://t.me/mrkiriss
