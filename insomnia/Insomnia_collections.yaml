@@ -1,0 +1,295 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: My first collection
+meta:
+  id: wrk_f94179f08bb14fe7aed1821d270dd6cd
+  created: 1767820345874
+  modified: 1767820345874
+  description: ""
+collection:
+  - name: Notes
+    meta:
+      id: fld_117a537ef81841f89728b88f2b71c319
+      created: 1767824814800
+      modified: 1767824814800
+      sortKey: -1767824814800
+      description: ""
+    children:
+      - url: "{{ base_url }}/api/v1/notes"
+        name: Create note
+        meta:
+          id: req_6d58be68bf86433faa83a92f9bd10323
+          created: 1767824814806
+          modified: 1767875495600
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814806
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "title": "Тест1",
+              "content": "Milk, eggs, bread"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url
+          }}/api/v1/notes/967a6b55-8401-408c-9e9f-67fefc377b75?include=tags"
+        name: Get note by id
+        meta:
+          id: req_e5467db15e4a42c1999394a1f0ed60e9
+          created: 1767824814806
+          modified: 1767875522506
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814806
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/v1/notes/967a6b55-8401-408c-9e9f-67fefc377b75"
+        name: Update note (PUT)
+        meta:
+          id: req_9be4b49a358d469baa25aa11fe423f37
+          created: 1767824814807
+          modified: 1767875623901
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814807
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "title": "Buy groceries today23",
+              "content": "Milk, eggs, bread, tea",
+              "is_archived": true,
+              "tag_ids": ["eb5f4c14-e683-4b68-a9af-15f22d3e812b"]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/v1/notes/967a6b55-8401-408c-9e9f-67fefc377b75"
+        name: Patch note (PATCH)
+        meta:
+          id: req_0ddd1bd36a344103968b26fc664f165d
+          created: 1767824814809
+          modified: 1767875802122
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814809
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "content": "Updated content"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/v1/notes/e153c08f-5826-4f24-97c6-fad44c25c7c2"
+        name: Delete note
+        meta:
+          id: req_68842258715d408499740ef9d8d46867
+          created: 1767824814811
+          modified: 1767876176483
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814811
+        method: DELETE
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/v1/notes:search?include=tags"
+        name: Search notes
+        meta:
+          id: req_03f6480e5e1b4cafa68b3d7222acabc8
+          created: 1767824814812
+          modified: 1767876137403
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814812
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"filter": {
+            			"query": "Buy"
+            	},
+              "page": { "number": 1, "size": 20 }
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/v1/notes:search-one"
+        name: Search one note
+        meta:
+          id: req_4a6a757cc58d4b98ac848d5323560266
+          created: 1767824814812
+          modified: 1767858731189
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814812
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "filter": { "title": "home" }
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Tags
+    meta:
+      id: fld_8c481567a5f740f8ad7686b365bef5c9
+      created: 1767824814801
+      modified: 1767824814801
+      sortKey: -1767824814801
+      description: ""
+    children:
+      - url: "{{ base_url }}/api/v1/tags"
+        name: Create tag
+        meta:
+          id: req_597587b5e3504fc5a84e906be13975f7
+          created: 1767824814802
+          modified: 1767858794261
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814802
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "name": "home2"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/v1/tags/01299d89-77ea-470a-8fd5-3e15ef72fa64"
+        name: Get tag by id
+        meta:
+          id: req_ae0bb954b59e4f8eb0a96f589cf702c5
+          created: 1767824814803
+          modified: 1767865122757
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814803
+        method: GET
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ base_url }}/api/v1/tags:search"
+        name: Search tags
+        meta:
+          id: req_3545c87b33be4da8a07b2df0333d2c27
+          created: 1767824814805
+          modified: 1767824878392
+          isPrivate: false
+          description: ""
+          sortKey: -1767824814805
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "filter": {
+                "query": "ho"
+              },
+              "sort": [
+                { "field": "name", "direction": "asc" }
+              ],
+              "page": { "number": 1, "size": 50 }
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_4171f103d8b7bf0e1b9aa878529f2352e864b344
+    created: 1767820345878
+    modified: 1767820345878
+environments:
+  name: Base Environment
+  meta:
+    id: env_4171f103d8b7bf0e1b9aa878529f2352e864b344
+    created: 1767820345877
+    modified: 1767820345877
+    isPrivate: false

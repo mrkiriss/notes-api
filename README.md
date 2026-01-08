@@ -146,6 +146,11 @@ RUN_INTEGRATION_TESTS=true IT_DB_HOST=localhost IT_DB_PORT=5432 IT_DB_NAME=notes
    - `pre-commit`: `./gradlew ktlintCheck`, `./gradlew detekt`
    - `pre-push`: `./gradlew test`
 
+## Ручное тестирование
+
+В папке [`insomnia`](./insomnia) лежит коллекция запросов для Insomnia. Импортируй её в клиент и используй для ручного тестирования API.
+
+
 ## Контакты и поддержка
 
 Автор: Воскребенцев Кирилл  
