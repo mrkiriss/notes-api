@@ -5,6 +5,7 @@ val flywayVersion: String by project
 val postgresVersion: String by project
 val junitVersion: String by project
 val junitPlatformVersion: String by project
+val dotenvVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -18,7 +19,7 @@ group = "ru.miet.kvosk.notes"
 version = "0.0.1"
 
 application {
-    mainClass = "io.ktor.server.netty.EngineMain"
+    mainClass = "ru.miet.kvosk.notes.ApplicationKt"
 }
 
 java {
@@ -43,6 +44,7 @@ dependencies {
     implementation("io.ktor:ktor-server-netty")
     implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
+    implementation("io.github.cdimascio:dotenv-kotlin:$dotenvVersion")
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")

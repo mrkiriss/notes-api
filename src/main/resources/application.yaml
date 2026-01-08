@@ -2,15 +2,3 @@ ktor:
   application:
     modules:
       - ru.miet.kvosk.notes.ApplicationKt.module
-  deployment:
-    port: "$APP_PORT"
-
-app:
-  env: "$APP_ENV"
-
-db:
-  host: "$DB_HOST"
-  port: "$DB_PORT"
-  name: "$DB_NAME"
-  user: "$DB_USER"
-  password: "$DB_PASSWORD"
