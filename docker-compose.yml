@@ -23,7 +23,7 @@
       postgres:
         condition: service_healthy
     env_file:
-      - .env.docker
+      - .env
     ports:
       - "${APP_PORT}:8080"
 

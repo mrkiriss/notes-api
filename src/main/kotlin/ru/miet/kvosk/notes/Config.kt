@@ -1,6 +1,7 @@
 package ru.miet.kvosk.notes
 
 import io.github.cdimascio.dotenv.Dotenv
+import io.github.cdimascio.dotenv.dotenv
 import io.ktor.server.application.Application
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -38,16 +39,22 @@ private fun loadDatabaseConfig(): DatabaseConfig {
 private val dotenv: Dotenv by lazy {
     val localPath = Paths.get(".env.local")
     val defaultPath = Paths.get(".env")
-    val fileName = when {
-        Files.exists(localPath) -> ".env.local"
-        Files.exists(defaultPath) -> ".env"
-        else -> null
-    }
+    val fileName =
+        when {
+            Files.exists(localPath) -> ".env.local"
+            Files.exists(defaultPath) -> ".env"
+            else -> null
+        }
     if (fileName == null) {
-        io.github.cdimascio.dotenv.dotenv { ignoreIfMissing = true }
+        dotenv { ignoreIfMissing = true }
+    } else if (fileName == ".env.local") {
+        dotenv {
+            filename = ".env.local"
+            ignoreIfMissing = true
+        }
     } else {
-        io.github.cdimascio.dotenv.dotenv {
-            filename = fileName
+        dotenv {
+            filename = ".env"
             ignoreIfMissing = true
         }
     }

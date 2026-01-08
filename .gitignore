@@ -38,4 +38,3 @@ out/
 # Local environment overrides
 .env
 .env.local
-.env.docker

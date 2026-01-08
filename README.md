@@ -11,9 +11,10 @@ Here are some useful links to get you started:
 
 ## Environment
 
-- Local: copy `.env.example` to `.env.local` and adjust values as needed.
-- Docker: copy `.env.docker.example` to `.env.docker` (preconfigured for docker-compose).
-- Both `.env.local` and `.env.docker` are ignored by git; keep secrets local.
+- Copy `.env.example` to `.env` and adjust values as needed.
+- `.env` is used by docker-compose (use `DB_HOST=postgres`).
+- `.env.local` is optional and has priority over `.env` for local launch (use `DB_HOST=localhost`).
+- `.env` and `.env.local` are ignored by git; keep secrets local.
 
 ## Features
 
